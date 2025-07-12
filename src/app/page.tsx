@@ -5,14 +5,15 @@ import { useEffect, useState } from "react";
 import InnovationCard from "@/components/InnovationCard";
 
 type innovation = {
-  ArtifactName: string;
-  Title: string;
-  FirstName: string;
-  LastName: string;
-  Description: string;
-  ExternalLink: string;
-  ImageFile: string;
-  AttachedPDF: string;
+  id : number;
+  artifact_name : string;
+  title : string;
+  first_name : string;
+  last_name : string;
+  description : string;
+  external_link : string;
+  image_filename : string;
+  pdf_filename : string;
 };
 
 export default function Home() {
@@ -41,9 +42,9 @@ export default function Home() {
   return (
     <div>
       {/* หน้า Card ของ นวัตกรรม */}
-      <div className="flex">
+      <div className="flex justify-center gap-4 m-5">
         {innovations.map((innovation) => (
-          <InnovationCard {...innovation}></InnovationCard>
+          <InnovationCard {...innovation} key={innovation.id }></InnovationCard>
         ))}
       </div>
     </div>

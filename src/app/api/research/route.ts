@@ -1,5 +1,9 @@
-import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { db } from "@/lib/db"; // เชื่อม Database Mysql
+import { NextRequest, NextResponse } from "next/server";
+//ทำให้เขียนไฟล์ได้
+import { writeFile, mkdir } from "fs/promises";
+// เรียก path
+import path from "path";
 
 // ตึงข้อมูล
 export async function GET() {
@@ -12,104 +16,78 @@ export async function GET() {
 }
 
 // เพิ่มข้อมูล
-export async function POST(req: Request) {
-  // ข้อมูล
-  const {
-    ArtifactName,
-    Title,
-    FirstName,
-    LastName,
-    Description,
-    ExternalLink,
-    ImageFile,
-    AttachedPDF,
-  } = await req.json();
+export async function POST(req: NextRequest) {
+  try {
+    const formData = await req.formData();
+    console.log("formData:", formData);
+    // ดึงข้อมูลจาก Form
+    // ข้อความ ธรรมดา
+    const ArtifactName = formData.get("ArtifactName")?.toString() ?? "";
+    const Description = formData.get("Description")?.toString() ?? "";
+    const ExternalLink = formData.get("ExternalLink")?.toString() ?? "";
+    const FirstName = formData.get("FirstName")?.toString() ?? "";
+    const LastName = formData.get("LastName")?.toString() ?? "";
+    const Title = formData.get("Title")?.toString() ?? "";
 
-  //   ตรวจสอบข้อมูล
-  if (!ArtifactName) {
-    return NextResponse.json(
-      {
-        error: "ArtifactName is required",
-      },
-      { status: 400 }
-    );
-  } else if (!Title) {
-    return NextResponse.json(
-      {
-        error: "Title is required",
-      },
-      { status: 400 }
-    );
-  } else if (!FirstName) {
-    return NextResponse.json(
-      {
-        error: "FirstName is required",
-      },
-      { status: 400 }
-    );
-  } else if (!LastName) {
-    return NextResponse.json(
-      {
-        error: "LastName is required",
-      },
-      { status: 400 }
-    );
-  } else if (!Description) {
-    return NextResponse.json(
-      {
-        error: "Description is required",
-      },
-      { status: 400 }
-    );
-  } else if (!ImageFile) {
-    return NextResponse.json(
-      {
-        error: "ImageFile is required",
-      },
-      { status: 400 }
-    );
-  } else if (!AttachedPDF) {
-    return NextResponse.json(
-      {
-        error: "AttachedPDF is required",
-      },
-      { status: 400 }
-    );
-  } else if (!ExternalLink) {
-    return NextResponse.json(
-      {
-        error: "ExternalLink is required",
-      },
-      { status: 400 }
-    );
-  } else {
-    try {
-      //   เพิ่มข้อมูล
-      const [result] = await db.query(
-        "INSERT INTO research (ArtifactName, Title, FirstName, LastName, Description, ExternalLink, ImageFile, AttachedPDF) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          ArtifactName,
-          Title,
-          FirstName,
-          LastName,
-          Description,
-          ExternalLink,
-          ImageFile,
-          AttachedPDF,
-        ]
-      );
+    // ไฟล์ต่างๆ
+    const imageFile = formData.get("ImageFile") as File | null;
+    const pdfFile = formData.get("AttachedPDF") as File | null;
 
-      return NextResponse.json({
-        message: "Research added successfully",
-      });
-    } catch (error) {
-      console.error("Error Adding research: ", error);
-      return NextResponse.json(
-        {
-          error: "Failed to add research",
-        },
-        { status: 500 }
-      );
+    // สร้าง folder เพื่อเก็บไฟล์
+    const uploadDir = path.join(process.cwd(), "public/uploads");
+    // เริ่มสร้าง
+    await mkdir(uploadDir, { recursive: true });
+    // เก็บชื่อไฟล์
+    let imageFileName: string | null = null;
+    let pdfFileName: string | null = null;
+
+    // บันทึกรูป
+    if (imageFile) {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      imageFileName = `${Date.now()}-${imageFile.name}`;
+      const imagePath = path.join(uploadDir, imageFileName);
+      await writeFile(imagePath, buffer);
     }
+
+    // บันทึก PDF
+    if (pdfFile) {
+      const bytes = await pdfFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      pdfFileName = `${Date.now()}-${pdfFile.name}`;
+      const pdfPath = path.join(uploadDir, pdfFileName);
+      await writeFile(pdfPath, buffer);
+    }
+    console.log("imageFile:", imageFile);
+    console.log("pdfFile:", pdfFile);
+
+    // 🔄 บันทึกข้อมูลลง MySQL
+    await db.query(
+      `INSERT INTO research (
+        artifact_name, description, external_link,
+        image_filename, pdf_filename,
+        first_name, last_name, title
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        ArtifactName,
+        Description,
+        ExternalLink,
+        `uploads/${imageFileName}`, // ✅ เก็บ path สั้น
+        `uploads/${pdfFileName}`, // ✅ เก็บ path สั้น
+        FirstName,
+        LastName,
+        Title,
+      ]
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.log("Error Saving research: ", error);
+    return NextResponse.json(
+      {
+        error: "เกิดข้อผิดพลาดในการบันทึกข้อมูล research",
+      },
+      { status: 500 }
+    );
   }
 }

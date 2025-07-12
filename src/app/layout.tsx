@@ -23,17 +23,22 @@ export default async function RootLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   return (
     <html lang="en">
-      <body>
-        <SidebarProvider defaultOpen={defaultOpen} className="m-2">
-          <AppSidebar />
-          <main>
-            <SidebarTrigger />
-            <div className="contener mx-auto">
-            {/* เนื้อหาหลักของแอปพลิเคชัน */}
-            {children}
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body className="h-screen">
+        {/* ครอบ Sidebar + Main ด้วย flex */}
+        <div className="flex h-full">
+          <SidebarProvider defaultOpen={defaultOpen} className="m-2">
+            <AppSidebar />
+            <div>
+              {/* เนื้อหาหลักของแอปพลิเคชัน */}
+              <main className="w-screen h-screen flex flex-col items-center gap-2">
+                {children}
+              </main>
             </div>
-          </main>
-        </SidebarProvider>
+          </SidebarProvider>
+        </div>
       </body>
     </html>
   );

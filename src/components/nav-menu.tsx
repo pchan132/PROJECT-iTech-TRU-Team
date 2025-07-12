@@ -18,10 +18,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+import { SidebarTrigger } from "@/components/ui/sidebar";
+
 export function NavMenu({
   items,
 }: {
   items: {
+    id: number;
     title: string;
     url: string;
     icon?: LucideIcon;
@@ -31,23 +34,27 @@ export function NavMenu({
   console.log(items);
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="text-xl">เมนู</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-xl ">
+        เมนู
+        <div className="static">
+          <SidebarTrigger className="absolute right-0 top-2" />
+        </div>
+      </SidebarGroupLabel>
+
       <SidebarMenu>
         {items.map((item) => (
           // Collapsible ทำให้ เมนูพับได้
           <Collapsible
-            key={item.title}
+            key={item.id}
             asChild
             defaultOpen={item.isActive}
             className="group/collapsible"
           >
-            {/* เมนู Sidebar */}
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                {/* asChild ทำให้ กด ลิ้งได้ ทั้งปุ่ม */}
                 <SidebarMenuButton tooltip={item.title} asChild>
                   <a href={item.url} className="flex items-center">
-                    {item.icon && <item.icon className="mr-2 " />}
+                    {item.icon && <item.icon className="mr-2" />}
                     <span className="text-xl">{item.title}</span>
                   </a>
                 </SidebarMenuButton>
