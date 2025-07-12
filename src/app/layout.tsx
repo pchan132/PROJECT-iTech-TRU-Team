@@ -29,15 +29,18 @@ export default async function RootLayout({
       </head>
       <body>
         {/* Navbar ด้านบน */}
-        <Header />
-        {/* ส่วน Layout หลัก: Sidebar + เนื้อหา */}
-        <div className="flex border-2 pt-17">
-          {/* <Sidebar /> */}
-          <aside>
+        <div className="w-full mb-5">
+          <Header />
+        </div>
+        {/* Layout หลัก: ซ้าย Sidebar / ขวา Content */}
+        <div className="flex">
+          {/* Sidebar ซ้าย */}
+          <aside className="min-h-screen w-64">
             <Sidebar />
           </aside>
-          {/* เนื้อหาหลักของแอปพลิเคชัน */}
-          <main className="flex-1 h-screen overflow-y-auto">{children}</main>
+
+          {/* Content ขวา */}
+          <main className="flex-1 p-6 border-2 bg-amber-300">{children}</main>
         </div>
       </body>
     </html>

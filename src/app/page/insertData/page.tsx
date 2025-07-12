@@ -121,7 +121,7 @@ export default function AddResearchPage() {
   };
 
   return (
-    <div className="flex items-center justify-center px-4 py-8">
+    <div className="flex  items-center justify-center px-4 py-8">
       <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg">
         {/* Header */}
         <div className="bg-red-500 text-white text-center py-4 rounded-t-xl text-xl font-bold">
