@@ -5,8 +5,9 @@ import { cookies } from "next/headers";
 import "@/app/globals.css";
 
 // Sidebar components
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import Sidebar from "@/components/sidebar";
+// nav
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "คลังสิ่งประดิษฐ์",
@@ -26,18 +27,17 @@ export default async function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className="h-screen">
-        {/* ครอบ Sidebar + Main ด้วย flex */}
-        <div className="flex h-full">
-          <SidebarProvider defaultOpen={defaultOpen} className="m-2">
-            <AppSidebar />
-            <div>
-              {/* เนื้อหาหลักของแอปพลิเคชัน */}
-              <main className="w-screen h-screen flex flex-col items-center gap-2">
-                {children}
-              </main>
-            </div>
-          </SidebarProvider>
+      <body>
+        {/* Navbar ด้านบน */}
+        <Header />
+        {/* ส่วน Layout หลัก: Sidebar + เนื้อหา */}
+        <div className="flex border-2 pt-17">
+          {/* <Sidebar /> */}
+          <aside>
+            <Sidebar />
+          </aside>
+          {/* เนื้อหาหลักของแอปพลิเคชัน */}
+          <main className="flex-1 h-screen overflow-y-auto">{children}</main>
         </div>
       </body>
     </html>
