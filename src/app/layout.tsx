@@ -8,6 +8,7 @@ import "@/app/globals.css";
 import Sidebar from "@/components/sidebar";
 // nav
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "คลังสิ่งประดิษฐ์",
@@ -40,7 +41,13 @@ export default async function RootLayout({
           </aside>
 
           {/* Content ขวา */}
-          <main className="flex-1 p-6 border-2 bg-amber-300">{children}</main>
+          <main className="flex-1 p-6 border-2 ">
+            {children}
+            {/* Footer */}
+            <div className="mt-5">
+              <Footer />
+            </div>
+          </main>
         </div>
       </body>
     </html>

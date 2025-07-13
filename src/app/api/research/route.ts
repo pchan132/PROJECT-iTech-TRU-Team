@@ -58,8 +58,6 @@ export async function POST(req: NextRequest) {
       const pdfPath = path.join(uploadDir, pdfFileName);
       await writeFile(pdfPath, buffer);
     }
-    console.log("imageFile:", imageFile);
-    console.log("pdfFile:", pdfFile);
 
     // 🔄 บันทึกข้อมูลลง MySQL
     await db.query(

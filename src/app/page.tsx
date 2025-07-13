@@ -42,7 +42,7 @@ export default function Home() {
   return (
     <div>
       {/* หน้า Card ของ นวัตกรรม */}
-      <div className="flex justify-center gap-4 m-5">
+      <div className="flex gap-4 mt-20">
         {innovations.map((innovation) => (
           <InnovationCard {...innovation} key={innovation.id }></InnovationCard>
         ))}

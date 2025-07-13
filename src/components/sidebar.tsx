@@ -1,5 +1,5 @@
 "use client";
-import { Home, Lightbulb, ArchiveRestore } from "lucide-react";
+import { Home, Lightbulb, ArchiveRestore, ShieldUser } from "lucide-react";
 
 // ข้อมูลให้กดใน sidebar
 const items = {
@@ -23,6 +23,13 @@ const items = {
       title: "แบบสำรวจ",
       url: "/research",
       icon: ArchiveRestore,
+      isActive: false,
+    },
+    {
+      id: 4,
+      title: "เข้าสู่ระบบ Admin",
+      url: "/page/Admin",
+      icon: ShieldUser,
       isActive: false,
     },
   ],

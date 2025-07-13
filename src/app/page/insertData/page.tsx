@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input"; // สมมุติว่าใช้ UI จากคุณ
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,9 @@ import { UploadIcon } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
+// รับข้อมูลจาก params
+import { useSearchParams } from "next/navigation";
 
 // สร้างฟังก์ชั่นควบคุมการกรอกข้อมูล
 const formSchema = z.object({
@@ -35,9 +38,13 @@ const formSchema = z.object({
 // สร้างชนิดข้อมูล (TypeScript type) ชื่อ FormData โดยอัตโนมัติ
 type FormData = z.infer<typeof formSchema>;
 
+// หน้า เพิ่มข้อมูล innovation
 export default function AddResearchPage() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  // หา id ใน params ที่ส่งมา
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("id"); // ✅ เรียกผ่านตัวแปรเดียวกัน
 
   // ใช้งานไลบรารี React Hook Form ร่วมกับ Zod โดยมีจุดประสงค์หลักคือการจัดการฟอร์มได้อย่างมีประสิทธิภาพและง่ายดาย
   const {
@@ -65,10 +72,13 @@ export default function AddResearchPage() {
 
     // ส่งข้อมูลไป API POST
     try {
-      const response = await fetch("/api/research", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        editId ? `/api/research/${editId}` : `/api/research`,
+        {
+          method: editId ? "PUT" : "POST",
+          body: formData,
+        }
+      );
       // เมื่อส่งข้อมูลไม่ได้
       if (!response.ok) {
         throw new Error("ไม่สามารถส่งข้อมูลได้");
@@ -76,7 +86,8 @@ export default function AddResearchPage() {
 
       // เมื่อส่งข้อมูลสำเร็จ
       const result = await response.json();
-      alert("ข้อมูลบันทึกเรียบร้อย");
+
+      alert(editId ? "แก้ไขข้อมูลเรียบร้อย" : "บันทึกข้อมูลเรียบร้อย");
       // ล้างข้อมูล
       reset();
       setImagePreviewUrl(null);
@@ -120,8 +131,36 @@ export default function AddResearchPage() {
     setImagePreviewUrl(null);
   };
 
+  // หา id ใน params ที่ส่งมา ถ้ามี id จะ มีค่าไปแทนที่ ใน form
+  useEffect(() => {
+    if (editId) {
+      const fetchData = async () => {
+        try {
+          const res = await fetch(`/api/research/${editId}`);
+          const [data] = await res.json();
+          // ใส่ข้อมูลที่ส่งมาก ไปแทนใน form
+          setValue("ArtifactName", data.artifact_name);
+          setValue("Description", data.description);
+          setValue("ExternalLink", data.external_link);
+          setValue("FirstName", data.first_name);
+          setValue("LastName", data.last_name);
+          setValue("Title", data.title);
+
+          // ตั้งค่า preview ภาพ
+          if (data.image_filename) {
+            setImagePreviewUrl(`/${data.image_filename}`);
+          }
+          // NOTE: ไฟล์ PDF จะไม่โหลดเป็น File ได้ → ต้องอัปโหลดใหม่ถ้าจะแก้
+        } catch (error) {
+          console.error("ไม่สามารถโหลดข้อมูล:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [editId, setValue]);
+
   return (
-    <div className="flex  items-center justify-center px-4 py-8">
+    <div className="flex items-center justify-center px-4 py-8">
       <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg">
         {/* Header */}
         <div className="bg-red-500 text-white text-center py-4 rounded-t-xl text-xl font-bold">
@@ -242,6 +281,12 @@ export default function AddResearchPage() {
               className="bg-white"
               onChange={handlePDFChange}
             />
+            {/* แสดงชื่อ PDF เก่า (อ่านอย่างเดียว) */}
+            {editId && !errors.AttachedPDF && (
+              <p className="text-sm text-gray-500">
+                * หากไม่เลือกใหม่ จะใช้ PDF เดิม
+              </p>
+            )}
           </div>
 
           {/* Buttons */}
@@ -251,7 +296,11 @@ export default function AddResearchPage() {
               className="bg-blue-500 hover:bg-blue-600 text-white"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
+              {isSubmitting
+                ? "กำลังบันทึกข้อมูล..."
+                : editId
+                ? "แก้ไขข้อมูล"
+                : "บันทึกข้อมูล"}
             </Button>
             <Button
               onClick={handleReset}
