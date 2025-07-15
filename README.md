@@ -17,3 +17,27 @@ ExternalLink, // ลิ้ง
 ImageFile, // ไฟล์ ภาพ
 AttachedPDF, // ไฟล์ PDF
 ------------------------------------------------------------------------------------------------------------
+
+สร้างฐานข้อมูล
+CREATE TABLE research (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  artifact_name VARCHAR(255),
+  description TEXT,
+  external_link VARCHAR(255),
+  image_filename VARCHAR(255),
+  pdf_filename VARCHAR(255),
+  first_name VARCHAR(100),
+  last_name VARCHAR(100),
+  title VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE itech.member (
+idmember INT NOT NULL AUTO_INCREMENT,
+Username VARCHAR(45) NOT NULL,
+Password VARCHAR(45) NOT NULL,
+LastUpdate VARCHAR(45) NOT NULL,
+Date DATETIME NULL,
+PRIMARY KEY (idmember));
+
+
