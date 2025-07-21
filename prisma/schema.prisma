@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model member {
+  UserID      Int      @id @default(autoincrement())
+  Username    String?  @db.VarChar(45)
+  Password    String?  @db.VarChar(45)
+  LoginStatus Int
+  LastUpdate  DateTime @db.DateTime(0)
+}
+
+model Research {
+  id             Int      @id @default(autoincrement())
+  artifact_name  String   @db.VarChar(100)
+  title          String?  @db.VarChar(45)
+  first_name     String?  @db.VarChar(45)
+  last_name      String?  @db.VarChar(45)
+  description    String   @db.VarChar(1500)
+  external_link  String   @db.VarChar(400)
+  image_filename String   @db.VarChar(255)
+  pdf_filename   String?  @db.VarChar(100)
+  created_at     DateTime @default(now()) @db.Timestamp(0)
+}
+
+
+
+
