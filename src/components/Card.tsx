@@ -26,7 +26,7 @@ export default function Card({
       <a href="#">
         <img
           className="w-full h-48 object-cover"
-          src={image_filename}
+          src={`./uploads/${image_filename}`} // แสดงรูปภาพจากโฟลเดอร์ uploads
           alt={image_filename}
         />
       </a>

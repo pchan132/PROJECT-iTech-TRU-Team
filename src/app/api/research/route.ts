@@ -1,4 +1,4 @@
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@prisma/client"; // นำเข้า PrismaClient จาก @prisma/client
 import { NextResponse } from "next/server";
 import path from "path"; // ใช้ path เพื่อจัดการกับเส้นทางไฟล์
 import fs from "fs/promises"; // ใช้ fs/promises เพื่อจัดการกับไฟล์แบบ Promise
