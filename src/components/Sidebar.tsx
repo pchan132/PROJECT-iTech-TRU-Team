@@ -28,7 +28,7 @@ const items = {
     {
       id: 4,
       title: "เข้าสู่ระบบ Admin",
-      url: "/page/Admin",
+      url: "/admin",
       icon: ShieldUser,
       isActive: false,
     },
