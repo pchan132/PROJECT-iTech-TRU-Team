@@ -2,32 +2,68 @@
 
 import React, { useState } from "react";
 import { Lock, Mail, Eye, EyeOff, User, Shield } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+// LoginForm Component
+// ใช้สำหรับการเข้าสู่ระบบของผู้ดูแลระบบ
 
 export default function LoginForm() {
+  const router = useRouter(); // ใช้สำหรับการเปลี่ยนเส้นทางหลังจากเข้าสู่ระบบสำเร็จ
+  // สถานะของฟอร์ม
+  // ใช้สำหรับเก็บข้อมูลที่กรอกในฟอร์ม
   const [formData, setFormData] = useState({
-    Username: "",
+    username: "",
     password: "",
   });
+
+  // สถานะสำหรับการแสดง/ซ่อนรหัสผ่าน และการโหลด
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // ฟังก์ชันสำหรับจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target; // ดึงชื่อและค่าจาก input
+    // อัพเดตสถานะของ formData ตามข้อมูลที่กรอก
+    // ใช้การ spread operator เพื่อคงค่าที่มีอยู่เดิมและอัพเดตเฉพาะค่าที่เปลี่ยนแปลง
     setFormData((prev) => ({
-      ...prev,
-      [name]: value,
+      ...prev, // คงค่าที่มีอยู่เดิม
+      [name]: value, // อัพเดตค่าที่เปลี่ยนแปลง
     }));
   };
 
+  // ฟังก์ชันสำหรับจัดการการส่งฟอร์ม
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault(); // ป้องกันการรีเฟรชหน้าเมื่อส่งฟอร์ม
+    setIsLoading(true); // ตั้งค่าสถานะการโหลดเป็น true
 
-    // Simulate API call
+    // Simulate API call // 
     setTimeout(() => {
       setIsLoading(false);
-      console.log("Login attempted with:", formData);
+      // console.log("Login attempted with:", formData); // แสดงข้อมูลที่กรอกในฟอร์ม
     }, 2000);
+
+    // ส่งข้อมูลเข้าสู่ระบบไปยัง API
+    // ใช้ fetch API เพื่อส่งข้อมูลเข้าสู่ระบบไปยัง API ที่กำหนด
+    try {
+      // ส่งข้อมูลเข้าสู่ระบบไปยัง API หรือจัดการตามที่ต้องการ
+      const res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) {
+        alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+        throw new Error("Login failed");
+      }
+
+      // หากเข้าสู่ระบบสำเร็จ
+      const data = await res.json();
+      console.log("Login successful from API:", data); // แสดงข้อมูลที่ได้รับจาก API
+      alert("เข้าสู่ระบบสำเร็จ");
+      // ทำการเปลี่ยนเส้นทางหรือจัดการต่อไปตามที่ต้องการ
+      router.push("/admin/management");
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (
@@ -59,9 +95,9 @@ export default function LoginForm() {
               <div className="relative">
                 <input
                   type="text"
-                  id="Username"
-                  name="Username"
-                  value={formData.Username}
+                  id="username"
+                  name="username"
+                  value={formData.username}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 pl-11 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-500"
                   placeholder="กรอกชื่อผู้ใช้ของคุณ"
