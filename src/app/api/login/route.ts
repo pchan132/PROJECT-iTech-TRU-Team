@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { use } from "react";
 
 const prisma = new PrismaClient();
+const secret = "innovation"; // คีย์ลับสำหรับ JWT
 
 export async function POST(req: Request) {
   try {
+    const jwt = require("jsonwebtoken"); // นำเข้า jwt สำหรับการสร้าง token
     const { username, password } = await req.json();
 
     // ตรวจสอบข้อมูลที่ได้รับ
@@ -36,10 +37,27 @@ export async function POST(req: Request) {
         { status: 401 }
       );
     }
-    // หากเข้าสู่ระบบสำเร็จ ส่งข้อมูลผู้ใช้กลับ
+
+    // สร้าง session หรือ token ที่ใช้ในการตรวจสอบสิทธิ์  JWT Token
+    const token = jwt.sign(
+      {
+        UserID: user.UserID,
+        // role: 'admin', // กำหนดบทบาทของผู้ใช้
+      },
+      process.env.JWT_SECRET || secret,
+      {
+        expiresIn: "24h", // กำหนดอายุของ token
+      }
+    );
+
+    // หากเข้าสู่ระบบสำเร็จ ส่งข้อมูลผู้ใช้และ token กลับ
     return NextResponse.json(
       {
         message: "Login ok",
+        token: token,
+        user: {
+          Username: user.Username,
+        },
       },
       { status: 200 }
     );
