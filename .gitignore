@@ -43,3 +43,5 @@ next-env.d.ts
 # Mysql login
 .env
 .env.local
+
+/src/generated/prisma
