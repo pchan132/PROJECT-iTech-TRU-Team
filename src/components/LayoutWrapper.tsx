@@ -20,6 +20,7 @@ export default function LayoutWrapper({
       {/* Navbar */}
       <div className="flex flex-row items-center justify-between px-4 bg-red-500 ">
         <Navbar />
+        {/* Mobile Menu Button */}
         <div className="flex items-center justify-between bg-red-500 md:hidden">
           <button onClick={() => setIsOpenSidebar(!isOpenSidebar)}>
             <Menu className="h-6 w-6" />

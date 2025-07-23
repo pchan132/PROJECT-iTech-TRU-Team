@@ -12,7 +12,7 @@ export default function LoginForm() {
   // สถานะของฟอร์ม
   // ใช้สำหรับเก็บข้อมูลที่กรอกในฟอร์ม
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -86,21 +86,21 @@ export default function LoginForm() {
             {/* Email Field */}
             <div className="space-y-2">
               <label
-                htmlFor="Username"
+                htmlFor="email"
                 className="text-sm font-medium text-gray-700 flex items-center gap-2"
               >
                 <Mail className="w-4 h-4" />
-                Username
+                อีเมล
               </label>
               <div className="relative">
                 <input
                   type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 pl-11 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-500"
-                  placeholder="กรอกชื่อผู้ใช้ของคุณ"
+                  placeholder="กรอกอีเมลของคุณ"
                   required
                 />
                 <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
@@ -179,14 +179,14 @@ export default function LoginForm() {
           </form>
 
           {/* Footer */}
-          {/* <div className="mt-6 text-center">
+          <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">
               ยังไม่มีบัญชี?{" "}
               <button className="text-blue-600 hover:text-blue-500 font-medium transition-colors">
                 สมัครสมาชิก
               </button>
             </p>
-          </div> */}
+          </div>
         </div>
 
         {/* Security Notice */}

@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     }
 
     // บันทึกข้อมูลลงในฐานข้อมูล
-    const newResqearch = await prisma.research.create({
+    const newResearch = await prisma.research.create({
       data: {
         artifact_name,
         title,
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     });
 
     //  ส่งข้อมูลที่สร้างใหม่กลับไป
-    return NextResponse.json(newResqearch, { status: 201 });
+    return NextResponse.json(newResearch, { status: 201 });
   } catch (error: any) {
     // จัดการข้อผิดพลาด
     // บันทึกข้อผิดพลาดใน console

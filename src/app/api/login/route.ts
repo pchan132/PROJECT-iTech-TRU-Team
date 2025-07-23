@@ -7,19 +7,19 @@ const secret = "innovation"; // คีย์ลับสำหรับ JWT
 export async function POST(req: Request) {
   try {
     const jwt = require("jsonwebtoken"); // นำเข้า jwt สำหรับการสร้าง token
-    const { username, password } = await req.json();
+    const { email, password } = await req.json();
 
     // ตรวจสอบข้อมูลที่ได้รับ
-    if (!username || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน" },
+        { error: "กรุณากรอกอีเมลและรหัสผ่าน" },
         { status: 400 }
       );
     }
 
     // ค้นหาผู้ใช้ในฐานข้อมูล
     const user = await prisma.member.findUnique({
-      where: { Username: username } as any, // ใช้ as any เพื่อหลีกเลี่ยงปัญหาการตรวจสอบประเภท
+      where: { email: email } as any, // ใช้ as any เพื่อหลีกเลี่ยงปัญหาการตรวจสอบประเภท
     });
 
     // ตรวจสอบว่าพบผู้ใช้หรือไม่
@@ -39,25 +39,25 @@ export async function POST(req: Request) {
     }
 
     // สร้าง session หรือ token ที่ใช้ในการตรวจสอบสิทธิ์  JWT Token
-    const token = jwt.sign(
-      {
-        UserID: user.UserID,
-        // role: 'admin', // กำหนดบทบาทของผู้ใช้
-      },
-      process.env.JWT_SECRET || secret,
-      {
-        expiresIn: "24h", // กำหนดอายุของ token
-      }
-    );
+    // const token = jwt.sign(
+    //   {
+    //     UserID: user.UserID,
+    //     // role: 'admin', // กำหนดบทบาทของผู้ใช้
+    //   },
+    //   process.env.JWT_SECRET || secret,
+    //   {
+    //     expiresIn: "24h", // กำหนดอายุของ token
+    //   }
+    // );
 
     // หากเข้าสู่ระบบสำเร็จ ส่งข้อมูลผู้ใช้และ token กลับ
     return NextResponse.json(
       {
         message: "Login ok",
-        token: token,
-        user: {
-          Username: user.Username,
-        },
+        // token: token,
+        // user: {
+        //   Username: user.Username,
+        // },
       },
       { status: 200 }
     );
