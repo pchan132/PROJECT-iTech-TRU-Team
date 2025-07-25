@@ -9,7 +9,7 @@ datasource db {
 
 model member {
   UserID      Int      @id @default(autoincrement())
-  Username    String?  @db.VarChar(45)
+  email    String?  @db.VarChar(45) @unique
   Password    String?  @db.VarChar(45)
   LoginStatus Int
   LastUpdate  DateTime @db.DateTime(0)
