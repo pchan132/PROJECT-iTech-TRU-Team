@@ -51,17 +51,17 @@ export async function PUT(
     // รับข้อมูลจาก form
     const formData = await request.formData();
 
-    // รับข้อมูล Text
-    const artifact_name = formData.get("artifact_name") as string;
-    const title = formData.get("title") as string;
-    const first_name = formData.get("first_name") as string;
-    const last_name = formData.get("last_name") as string;
-    const description = formData.get("description") as string;
-    const external_link = formData.get("external_link") as string;
+    // รับข้อมูล Text และตรวจสอบค่า null
+    const artifact_name = formData.get("ArtifactName") as string || "";
+    const title = formData.get("Title") as string || "";
+    const first_name = formData.get("FirstName") as string || "";
+    const last_name = formData.get("LastName") as string || "";
+    const description = formData.get("Description") as string || "";
+    const external_link = formData.get("ExternalLink") as string || "";
 
     // รับข้อมูลไฟล์
-    const image_filename = formData.get("image_filename") as File | null;
-    const pdf_filename = formData.get("pdf_filename") as File | null;
+    const image_filename = formData.get("ImageFile") as File | null;
+    const pdf_filename = formData.get("AttachedPDF") as File | null;
 
     // สร้างตัวแปรสำหรับสร้าง ชื่อไฟล์
     let imageFileName = null;
